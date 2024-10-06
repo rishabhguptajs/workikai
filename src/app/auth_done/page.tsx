@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, Suspense } from "react"
 import axios from "axios"
 import { useSearchParams } from "next/navigation"
 
@@ -56,4 +56,10 @@ const AuthDonePage = () => {
   )
 }
 
-export default AuthDonePage
+const AuthDonePageWrapper = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <AuthDonePage />
+  </Suspense>
+)
+
+export default AuthDonePageWrapper
