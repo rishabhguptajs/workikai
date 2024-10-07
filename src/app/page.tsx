@@ -1,21 +1,35 @@
 "use client"
 
-import Image from "next/image"
+import { useEffect, useState } from 'react';
+import Cookie from 'js-cookie'
 
 export default function Home() {
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    const token = Cookie.get('token');
+    setIsConnected(!!token);
+  })
+
+  const connectGithub = () => {
+    const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
+    const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI;
+    const githubOAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=repo&redirect_uri=${redirectUri}`;
+    window.location.href = githubOAuthUrl;
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <a
-        href={
-          "https://github.com/login/oauth/authorize?client_id=" +
-          process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID
-        }
-        className="flex items-center gap-4"
-      >
-        <button className="px-4 py-2 text-white bg-black rounded-md">
-          Authorize with GitHub
-        </button>
-      </a>
+    <div className="flex items-center justify-center h-screen">
+      <div className="text-center">
+        <h1 className="text-3xl mb-4">GitHub PR Reviewer</h1>
+        {isConnected ? (
+          <p>Connected to GitHub</p>
+        ) : (
+          <button onClick={connectGithub} className="bg-blue-500 text-white p-3 rounded">
+            Connect GitHub
+          </button>
+        )}
+      </div>
     </div>
-  )
+  );
 }
